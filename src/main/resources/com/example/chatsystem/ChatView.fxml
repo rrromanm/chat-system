@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatsystem.View.ChatViewController">
+   <children>
+      <Label layoutX="217.0" layoutY="37.0" prefHeight="4.0" prefWidth="166.0" text="CHAT APP">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
+      <ScrollPane fx:id="scrollPane" fitToWidth="true" layoutX="103.0" layoutY="90.0" prefHeight="222.0" prefWidth="394.0">
+         <content>
+            <VBox fx:id="vBox_message" prefHeight="219.0" prefWidth="391.0" />
+         </content>
+      </ScrollPane>
+      <TextField fx:id="message" layoutX="103.0" layoutY="324.0" prefHeight="25.0" prefWidth="341.0" />
+      <Button fx:id="button_send" layoutX="451.0" layoutY="325.0" mnemonicParsing="false" text="SEND" onAction="#sendMessage"/>
+   </children>
+</AnchorPane>

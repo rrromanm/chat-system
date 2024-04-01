@@ -1,5 +1,6 @@
 package com.example.chatsystem.View;
 
+import com.example.chatsystem.ViewModel.ViewModelFactory;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -12,19 +13,19 @@ public class ViewHandler
 
     public ViewHandler(ViewModelFactory viewModelFactory)
     {
-        this.viewFactory = ViewFactory.getInstance(this, viewModelFactory);
+        this.viewFactory = new ViewFactory(this, viewModelFactory);
         this.currentScene = new Scene(new Region());
     }
 
     public void start(Stage primaryStage)
     {
         this.primaryStage = primaryStage;
-        openView(ViewFactory.LOGIN);
+        openView(ViewFactory.CHAT_VIEW_ID);
     }
 
     public void openView(String id)
     {
-        Region root = viewFactory.load(id);
+        Region root = viewFactory.loadView(id);
         currentScene.setRoot(root);
         if(root.getUserData() == null)
             primaryStage.setTitle("");
