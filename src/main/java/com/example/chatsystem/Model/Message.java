@@ -1,30 +1,17 @@
 package com.example.chatsystem.Model;
 
-import java.io.Serializable;
-
-public class Message implements Serializable
-{
-    private final String sender;
-    private final String receiver;
-    private final String content;
-    public Message(String sender, String receiver, String content){
-        this.sender = sender;
-        this.receiver = receiver;
-        this.content = content;
+public class Message {
+    private final String msg;
+    public Message(String message){
+        this.msg = message;
     }
 
-    public String getSender() {
-        return sender;
+    public String getMsg() {
+        return msg;
     }
 
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public String getContent() {
-        return content;
-    }
-    public String toString(){
-        return sender + ": " + content;
+    @Override
+    public String toString() {
+        return msg;
     }
 }

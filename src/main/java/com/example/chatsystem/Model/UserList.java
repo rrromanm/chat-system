@@ -1,61 +1,46 @@
 package com.example.chatsystem.Model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class UserList implements Serializable
+public class UserList
 {
     private static UserList instance;
-    private final ArrayList<User> users;
-    private final ArrayList<String> usernames;
+    private ArrayList<User> users;
+    private ArrayList<String> usernames;
     public UserList(){
         this.users = new ArrayList<>();
         this.usernames = new ArrayList<>();
     }
 
-    public static UserList getInstance() {
-        if (instance == null){
+    public static synchronized UserList getInstance(){
+        if (instance == null)
+        {
             instance = new UserList();
         }
         return instance;
     }
 
-    public synchronized void addUsers(User user){
-        for (int i = 0; i < users.size(); i++)
-        {
-            if (users.get(i).equals(user))
-            {
-                return;
-            }
-        }
-        users.add(user);
-        usernames.add(user.getUsername());
-    }
-
-    public synchronized void ChangePerson(User user){
-        for (int i = 0; i < users.size(); i++) {
-            if(users.get(i).equals(user)){
-                users.remove(users.get(i));
-                users.add(user);
-                break;
-            }
+    public synchronized void addUser(User user){
+        if (!users.contains(user)) {
+            users.add(user);
+            usernames.add(user.getUsername());
         }
     }
+    public synchronized int getSize()
+    {
+        return users.size();
+    }
 
-    public synchronized ArrayList<String> getUsernames() {
+    public synchronized ArrayList<String> getUsernames(){
         return usernames;
     }
 
-    public synchronized ArrayList<User> getUsers() {
-        return users;
-    }
-    public synchronized String toString()
-    {
-        String temp = "";
-        for (int i = 0; i < users.size(); i++)
-        {
-            temp += users.get(i) + "\n";
+    @Override
+    public String toString() {
+        String users = "";
+        for(int i = 0; i < usernames.size(); i++){
+            users += usernames.get(i) + "\n";
         }
-        return temp;
+        return users;
     }
 }

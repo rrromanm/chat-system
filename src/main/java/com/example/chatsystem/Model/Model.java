@@ -2,11 +2,12 @@ package com.example.chatsystem.Model;
 
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public interface Model
 {
-    String login(String nickname, String password) throws IOException, InterruptedException;
-    void disconnect();
+    void disconnect() throws IOException;
+    void login(String username, String password) throws IOException;
+    void sendMsg(String msg, User user) throws IOException, InterruptedException;
     void addPropertyChangeListener(PropertyChangeListener listener);
+    void removePropertyChangeListener(PropertyChangeListener listener);
 }
