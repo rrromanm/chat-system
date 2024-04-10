@@ -1,8 +1,16 @@
 package com.example.chatsystem.Server;
 
+import com.example.chatsystem.File.FileLog;
+import com.example.chatsystem.Model.Message;
+import com.example.chatsystem.Model.User;
+import com.example.chatsystem.Model.UserList;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ChatCommunicator implements Runnable {
@@ -12,7 +20,7 @@ public class ChatCommunicator implements Runnable {
 
     private FileLog fileLog;
     private File file;
-    private final PeopleLog peopleLog;
+    private final UserList userList;
     private String username;
 
     public ChatCommunicator(Socket socket, UDPBroadcaster broadcaster) {
@@ -20,8 +28,17 @@ public class ChatCommunicator implements Runnable {
         this.broadcaster = broadcaster;
         this.gson = new Gson();
 
-        this.peopleLog = PeopleLog.getInstance();
-        this.file = new File("src/main/java/main/chatsystem/File/ChatLog");
+        this.userList = UserList.getInstance();
+        this.file = new File("src/main/java/com/example/chatsystem/File/ChatLog");
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                System.out.println("File created: " + file.getAbsolutePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Error creating file: " + e.getMessage());
+            }
+        }
         this.fileLog = FileLog.getInstance(file);
     }
 
@@ -42,8 +59,8 @@ public class ChatCommunicator implements Runnable {
                     String loginData = reader.readLine();
                     try {
                         User login = gson.fromJson(loginData, User.class);
-                        username = login.getNickname();
-                        if (!login.getNickname().isEmpty() || !login.getPassword().isEmpty())
+                        username = login.getUsername();
+                        if (!login.getUsername().isEmpty() || !login.getPassword().isEmpty())
                         {
                             writer.println("Approved");
                             System.out.println("Logged successfully");
@@ -55,7 +72,7 @@ public class ChatCommunicator implements Runnable {
 
 
 
-                            fileLog.log(socket.getInetAddress() + " User " + login.getNickname() + " has joined the chat.");
+                            fileLog.log(socket.getInetAddress() + " User " + login.getUsername() + " has joined the chat.");
                         }
                         else
                         {
@@ -90,7 +107,7 @@ public class ChatCommunicator implements Runnable {
                     Message jSonMessage = gson.fromJson(messageContent, Message.class);
                     broadcaster.broadcast(messageContent);
 
-                    fileLog.log(socket.getInetAddress() + " User " + username + " has sent a message: "+jSonMessage.getMessage());
+                    fileLog.log(socket.getInetAddress() + " User " + username + " has sent a message: "+ jSonMessage.getMsg());
 
                 }
             }

@@ -6,12 +6,13 @@ import com.example.chatsystem.View.ChatViewController;
 public class ViewModelFactory {
     private LogInViewModel logInViewModel;
     private ChatViewModel chatViewModel;
-    public ViewModelFactory(Model model){
-        this.chatViewModel = new ChatViewModel(model);
+
+    public ViewModelFactory(Model model) {
         this.logInViewModel = new LogInViewModel(model);
+        this.chatViewModel = new ChatViewModel(model);
     }
 
-    public LogInViewModel getLogInViewModel() {
+    public LogInViewModel getLoginViewModel() {
         return logInViewModel;
     }
 

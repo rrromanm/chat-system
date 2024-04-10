@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.chatsystem.View.ChatViewController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatsystem.View.ChatViewController">
     <children>
         <TextField fx:id="messageField" layoutX="251.0" layoutY="361.0" prefHeight="26.0" prefWidth="242.0" />
         <Button fx:id="sendButton" layoutX="503.0" layoutY="361.0" mnemonicParsing="false" onAction="#onSend" prefHeight="18.0" prefWidth="82.0" text="Send">

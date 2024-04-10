@@ -14,7 +14,7 @@ public class ModelManager implements Model, PropertyChangeListener
     private final PropertyChangeSupport support;
     private final ChatClient client;
     public ModelManager() throws IOException{
-        this.client = new ChatClientImplementation("localhost", 1099);
+        this.client = new ChatClientImplementation("localhost", 5678);
         this.support = new PropertyChangeSupport(this);
         this.client.addPropertyChangeListener(this);
     }

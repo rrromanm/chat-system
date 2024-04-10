@@ -1,8 +1,11 @@
 package com.example.chatsystem.Client;
 
+import com.example.chatsystem.Model.Message;
 import com.example.chatsystem.Model.User;
+import com.example.chatsystem.Model.UserList;
 import com.example.chatsystem.Server.StreamsFactory;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -36,37 +39,106 @@ public class ChatClientImplementation implements ChatClient
 
 
     @Override
-    public void disconnect() throws IOException {
+    public synchronized void disconnect() throws IOException {
+        writer.println("Disconnect");
+        writer.flush();
+        String reply = reader.readLine();
+        String userLeft = username + " has left the chat.";
 
+        if (!reply.equals("Disconnected")) {
+            throw new IOException("Protocol failure");
+        }
+
+        Message message = new Message(userLeft);
+        String messageJSON = gson.toJson(message);
+        writer.println(messageJSON);
+        writer.flush();
+
+        socket.close();
     }
 
     @Override
-    public boolean login(String username, String password) throws IOException {
-        return false;
+    public synchronized boolean login(String username, String password) throws IOException {
+        writer.println("connect");
+        writer.flush();
+        String reply = reader.readLine();
+        if (!reply.equals("login required")) {
+            throw new IOException("Protocol failure");
+        }
+        User userLogin = new User(username, password);
+        UserList.getInstance().addUser(userLogin);
+        this.username = userLogin.getUsername();
+        String loginJSON = gson.toJson(userLogin);
+        writer.println(loginJSON);
+        writer.flush();
+        reply = reader.readLine();
+
+        support.firePropertyChange("UserAdded", null, userLogin);
+        support.firePropertyChange("UserLoggedIn", null, userLogin);
+        return reply.equals("Approved");
     }
 
     @Override
-    public void sendMessage(String msg, User user) throws IOException {
+    public synchronized void sendMessage(String messageContent, User user) throws IOException {
+
+        writer.println("Send message");
+        writer.flush();
+
+
+        if (user == null) {
+            System.out.println("user null");
+            throw new IllegalArgumentException("Error while sending message: user is null");
+        }
+        if (messageContent == null) {
+            System.out.println("message null");
+            throw new IllegalArgumentException("Error while sending message: message is empty");
+        }
+        String reply = reader.readLine();
+        if (!reply.equals("Provide message content")) {
+            System.out.println("Sending message protocol failure");
+        }
+
+        Message message = new Message(user.getUsername() + " : " + messageContent);
+
+        String messageJSON = gson.toJson(message);
+        writer.println(messageJSON);
+        writer.flush();
+
+        this.support.firePropertyChange("MessageSent", null, message.getMsg());
 
     }
 
     @Override
     public void addUser(User user) throws IOException {
+        String userJSON = gson.toJson(user + "joined chat with ip: " + socket.getInetAddress());
 
+        writer.println(userJSON);
+        writer.flush();
+
+
+        support.firePropertyChange("UserAdded", null, user.getUsername());
     }
 
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-
+        support.addPropertyChangeListener(listener);
     }
 
     @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-
+        support.removePropertyChangeListener(listener);
     }
 
     @Override
-    public void receiveBroadcast(String message) {
+    public synchronized void receiveBroadcast(String message) {
+        try {
 
+            Message messageObject = gson.fromJson(message, Message.class);
+
+
+            support.firePropertyChange("broadcast", null, messageObject);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
     }
 }
